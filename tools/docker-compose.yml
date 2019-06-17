@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+  dbpostgres:
+    restart: always
+    image: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=DEMO
+    volumes:
+      - postgres1:/var/lib/postgresql/data
+
+volumes:
+  postgres1:
+    driver: local
