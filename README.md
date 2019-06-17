@@ -78,7 +78,12 @@ A aplicação irá utilizar o Spring Boot Actuator para fornecer informações o
 
 Isto permitirá, por exemplo, que o Kubernetes tenha uma URL (/actuator/health) para utilizar no readinessProbe e livenessProbe.
 
-#### Testes unitários com Groovy e Spock
+#### Swagger API:
+A documentação da API do projeto pode ser obtido através da URI:
+* /swagger-ui.html - Swagger UI no formato HTML
+* /v2/api-docs - Json com os dados do Swagger
+
+#### Testes unitários com Groovy e Spock:
 
 A opção por utilizar testes unitários em Groovy com o framework Spock se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo
 

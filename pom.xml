@@ -61,6 +61,18 @@
             </dependency>
 
             <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox-swagger2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox-swagger2.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -113,6 +125,7 @@
         <objenesis.version>3.0.1</objenesis.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <jedis.version>2.9.0</jedis.version>
+        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
     </properties>
 
 </project>

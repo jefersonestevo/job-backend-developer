@@ -14,6 +14,7 @@ public class UserService {
     private UserDataBaseRepository userDataBaseRepository;
 
     public Optional<User> findUser(Long id) {
+        // TODO - Adicionar MongoDB e implementar lógica para "popular" os dados do usuário no MongoDB
         return userDataBaseRepository.findById(id);
     }
     
