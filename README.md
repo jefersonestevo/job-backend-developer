@@ -68,6 +68,16 @@ Para acesso Web, será feito um modelo de autentiação via HttpSession do Java.
 Para acesso via API, será utilizado um modelo de autentiação Stateless via JWT. Este modelo de autenticação permite que a aplicação cliente utilize um token JWT válido por um período de tempo grande. Como as aplicações clientes da API serão controladas internamente, fica mais simples para revogar este token.
 
 
+#### Actuator:
+A aplicação irá utilizar o Spring Boot Actuator para fornecer informações operacionais da aplicação através de URL's. As seguintes URl's estarão habilitadas:
+
+* /actuator/health - Não é necessário autenticação
+* /actuator/info - Não é necessário autenticação
+* /actuator/threaddump - Autentiação Basic com um usuário que possua role "ACTUATOR"
+* /actuator/metrics - Autentiação Basic com um usuário que possua role "ACTUATOR"
+
+Isto permitirá, por exemplo, que o Kubernetes tenha uma URL (/actuator/health) para utilizar no readinessProbe e livenessProbe.
+
 #### Testes unitários com Groovy e Spock
 
 A opção por utilizar testes unitários em Groovy com o framework Spock se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo

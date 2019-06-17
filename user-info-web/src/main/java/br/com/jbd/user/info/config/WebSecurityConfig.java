@@ -22,6 +22,7 @@ public class WebSecurityConfig {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(users.username("user").password("password").roles("USER").build());
         manager.createUser(users.username("admin").password("password").roles("USER", "ADMIN").build());
+        manager.createUser(users.username("actuator").password("password").roles("USER", "ACTUATOR").build());
         return manager;
     }
 
@@ -46,6 +47,25 @@ public class WebSecurityConfig {
 
             // TODO - Ajustar matchers e url's
             // TODO - Usar JWT
+        }
+    }
+
+    @Configuration
+    @Order(2)
+    public static class ActuatorConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .authorizeRequests()
+                    .antMatchers("/actuator/health", "/actuator/info").permitAll()
+                    .and()
+                    .antMatcher("/actuator/**")
+                    .authorizeRequests()
+                    .anyRequest().hasRole("ACTUATOR")
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .httpBasic();
         }
     }
 
