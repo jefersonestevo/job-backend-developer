@@ -1,4 +1,4 @@
-package br.com.jbd.user.info.controller.web;
+package br.com.jbd.user.info.controller.mvc;
 
 import br.com.jbd.user.info.model.User;
 import br.com.jbd.user.info.service.UserService;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/web/user")
-public class UserInfoController {
+@RequestMapping("/mvc/user")
+public class UserMvcController {
 
     @Autowired
     private UserService userService;
