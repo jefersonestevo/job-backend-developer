@@ -58,6 +58,15 @@ Na próxima consulta, os dados já estarão cadastrados na base NoSQL e nada imp
 
 **// TODO**
 
+#### Autenticação/Autorização
+Os dados de login, senha e roles dos usuários serão armazenado no banco de dados relacional (PostgreSQL)
+
+##### Acesso Web:
+Para acesso Web, será feito um modelo de autentiação via HttpSession do Java. Será utilizado o "Spring Session Redis" para armazenar esta sessão em um redis externo à aplicação permitindo que uma sessão do usuário seja desacoplada da aplicação. Assim, a aplicação poderá ser escalada horizontalmente sem problemas.
+
+##### Acesso API:
+Para acesso via API, será utilizado um modelo de autentiação Stateless via JWT. Este modelo de autenticação permite que a aplicação cliente utilize um token JWT válido por um período de tempo grande. Como as aplicações clientes da API serão controladas internamente, fica mais simples para revogar este token.
+
 
 #### Testes unitários com Groovy e Spock
 

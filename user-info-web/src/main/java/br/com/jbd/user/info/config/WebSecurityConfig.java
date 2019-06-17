@@ -6,6 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -16,6 +17,7 @@ public class WebSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
+        // TODO - Usar um UserDetailsService com acesso ao DB
         User.UserBuilder users = User.withDefaultPasswordEncoder();
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(users.username("user").password("password").roles("USER").build());
@@ -37,7 +39,13 @@ public class WebSecurityConfig {
                     .authorizeRequests()
                     .anyRequest().hasRole("ADMIN")
                     .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
                     .httpBasic();
+
+            // TODO - Ajustar matchers e url's
+            // TODO - Usar JWT
         }
     }
 
@@ -49,7 +57,12 @@ public class WebSecurityConfig {
                     .authorizeRequests()
                     .anyRequest().authenticated()
                     .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and()
                     .formLogin();
+
+            // TODO - Ajustar matchers e url's
         }
     }
 
