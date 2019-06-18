@@ -9,7 +9,6 @@ services:
     ports:
       - "8180:8080"
     environment:
-      - SPRING_MAIN_BANNER-MODE=CONSOLE
       - SPRING_CONFIG_LOCATION=file:/usr/src/app/config/application.properties
     volumes:
       - ./tools/env:/usr/src/app/config

@@ -65,6 +65,21 @@ Para acesso Web, será feito um modelo de autentiação via HttpSession do Java.
 ##### Acesso API:
 Para acesso via API, será utilizado um modelo de autentiação Stateless via JWT. Este modelo de autenticação permite que a aplicação cliente utilize um token JWT válido por um período de tempo grande. Como as aplicações clientes da API serão controladas internamente, fica mais simples para revogar este token.
 
+Para obter o token JWT, a aplicação deve fazer uma chamada para:
+``` 
+POST "/api/authenticate"
+{
+    "username": "XXXXXX",
+    "password": "YYYYYY"
+}
+```
+
+Após obter o token, este deve ser informado no Header `Authorization`, no formato:
+```
+Authorization: Bearer <token>
+```
+
+* Somente usuários com role `ADMIN` estão habilitados para chamadas na API
 
 #### Actuator:
 A aplicação irá utilizar o Spring Boot Actuator para fornecer informações operacionais da aplicação através de URL's. As seguintes URl's estarão habilitadas:
@@ -75,6 +90,9 @@ A aplicação irá utilizar o Spring Boot Actuator para fornecer informações o
 * /actuator/metrics - Autentiação Basic com um usuário que possua role "ACTUATOR"
 
 Isto permitirá, por exemplo, que o Kubernetes tenha uma URL (/actuator/health) para utilizar no readinessProbe e livenessProbe.
+
+##### Autenticação no actuator:
+Os endpoints que necessitarem de autenticação no actuator, irão utilizar um modelo de autenticação `BASIC` e o usuário deverá estar na role `ACTUATOR`
 
 #### Swagger API:
 A documentação da API do projeto pode ser obtido através da URI:
