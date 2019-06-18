@@ -50,4 +50,13 @@ public class UserDataBaseRepository extends NamedParameterJdbcDaoSupport {
         return getNamedParameterJdbcTemplate().query(sql, params, new UserAddressRowMapper());
     }
 
+    public void registerImport(Long id) {
+        String sql = " INSERT INTO JBD_USER_IMPORT(ID) VALUES(:ID) ";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ID", id);
+
+        getNamedParameterJdbcTemplate().update(sql, params);
+    }
+
 }

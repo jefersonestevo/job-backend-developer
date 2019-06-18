@@ -1,5 +1,7 @@
 package br.com.jbd.user.info.dto;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Objects;
 
 public class UserData implements Serializable {
 
+    @Id
     private Long id;
     private String login;
     private String name;

@@ -22,8 +22,21 @@ services:
     volumes:
       - redis1:/data
 
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: MongoDB2019!
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo1:/data/db
+
 volumes:
   postgres1:
     driver: local
   redis1:
+    driver: local
+  mongo1:
     driver: local

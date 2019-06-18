@@ -5,8 +5,13 @@ import br.com.jbd.user.info.dto.UserData;
 import br.com.jbd.user.info.model.User;
 import br.com.jbd.user.info.model.UserAddress;
 import br.com.jbd.user.info.repository.UserDataBaseRepository;
+import br.com.jbd.user.info.repository.UserDataMongoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +20,41 @@ import java.util.Optional;
 @Component
 public class UserService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserDataBaseRepository userDataBaseRepository;
 
+    @Autowired
+    private UserDataMongoRepository userDataMongoRepository;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     public Optional<UserData> findUser(Long id) {
-        // TODO - Adicionar MongoDB e implementar lógica para "popular" os dados do usuário no MongoDB
-        return userDataBaseRepository.findById(id).map(this::convertDataFromUserModel);
+        Optional<UserData> userData = userDataMongoRepository.findById(id);
+        if (!userData.isPresent()) {
+            userData = this.populateUserData(id);
+        }
+        return userData;
+    }
+
+    private Optional<UserData> populateUserData(Long id) {
+        Optional<UserData> userData = userDataBaseRepository.findById(id).map(this::convertDataFromUserModel);
+
+        if (userData.isPresent()) {
+            userDataMongoRepository.insert(userData.get());
+
+            try {
+                transactionTemplate.execute((status) -> {
+                    userDataBaseRepository.registerImport(id);
+                    return null;
+                });
+            } catch (DuplicateKeyException e) {
+                LOG.warn(String.format("Error trying to register import for user %d", id), e);
+            }
+        }
+        return userData;
     }
 
     private UserData convertDataFromUserModel(User user) {
