@@ -4,6 +4,7 @@ import br.com.jbd.user.info.dto.UserData;
 import br.com.jbd.user.info.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +16,10 @@ public class UserRestController {
 
     @GetMapping(path = "/info/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
-    UserData getUserInfo(@PathVariable("userId") Long userId) {
-        return userService.findUser(userId).orElse(null);
+    ResponseEntity<UserData> getUserInfo(@PathVariable("userId") Long userId) {
+        return userService.findUser(userId)
+                .map(ud -> ResponseEntity.ok().body(ud))
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
