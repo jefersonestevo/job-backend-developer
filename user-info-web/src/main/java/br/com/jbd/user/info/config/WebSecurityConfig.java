@@ -1,36 +1,54 @@
 package br.com.jbd.user.info.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        // TODO - Usar um UserDetailsService com acesso ao DB
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(users.username("user").password("password").roles("USER").build());
-        manager.createUser(users.username("admin").password("password").roles("USER", "ADMIN").build());
-        manager.createUser(users.username("actuator").password("password").roles("USER", "ACTUATOR").build());
-        return manager;
+    @Autowired
+    private DataSource dataSource;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html**", "/webjars/**", "favicon.ico").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .formLogin();
+
+        // TODO - Ajustar matchers e url's
     }
 
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
+        builder.jdbcAuthentication()
+                .passwordEncoder(passwordEncoder())
+                .usersByUsernameQuery("SELECT LOGIN, PASSWORD, ENABLED FROM JBD_USER WHERE LOGIN=?")
+                .authoritiesByUsernameQuery("SELECT LOGIN, ROLE FROM JBD_USER_ROLE WHERE LOGIN=?")
+                .dataSource(dataSource);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Configuration
     @Order(1)
@@ -67,24 +85,6 @@ public class WebSecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .httpBasic();
-        }
-    }
-
-    @Configuration
-    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html**", "/webjars/**", "favicon.ico").permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .formLogin();
-
-            // TODO - Ajustar matchers e url's
         }
     }
 
