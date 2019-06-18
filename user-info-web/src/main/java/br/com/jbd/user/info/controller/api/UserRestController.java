@@ -1,6 +1,6 @@
 package br.com.jbd.user.info.controller.api;
 
-import br.com.jbd.user.info.model.User;
+import br.com.jbd.user.info.dto.UserData;
 import br.com.jbd.user.info.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,7 +15,7 @@ public class UserRestController {
 
     @GetMapping(path = "/info/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
-    User getUserInfo(@PathVariable("userId") Long userId) {
+    UserData getUserInfo(@PathVariable("userId") Long userId) {
         return userService.findUser(userId).orElse(null);
     }
 

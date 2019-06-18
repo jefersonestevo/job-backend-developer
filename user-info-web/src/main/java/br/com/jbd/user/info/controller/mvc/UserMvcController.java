@@ -1,6 +1,6 @@
 package br.com.jbd.user.info.controller.mvc;
 
-import br.com.jbd.user.info.model.User;
+import br.com.jbd.user.info.dto.UserData;
 import br.com.jbd.user.info.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +20,12 @@ public class UserMvcController {
 
     @GetMapping("/info/{userId}")
     public String getUserInfo(@PathVariable("userId") Long userId, Model model) {
-        Optional<User> user = userService.findUser(userId);
-        if (!user.isPresent()) {
+        Optional<UserData> userData = userService.findUser(userId);
+        if (!userData.isPresent()) {
             return "404";
         }
 
-        model.addAttribute("user", user.get());
+        model.addAttribute("user", userData.get());
         return "user-info";
     }
 
