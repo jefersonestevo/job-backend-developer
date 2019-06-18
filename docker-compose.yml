@@ -1,5 +1,19 @@
 version: '3.4'
 services:
+  jbd.user.web:
+    image: jbd.user.web/user-info-web
+    container_name: user-info-web
+    build:
+      context: .
+      dockerfile: user-info-web/Dockerfile
+    ports:
+      - "8180:8080"
+    environment:
+      - SPRING_MAIN_BANNER-MODE=CONSOLE
+      - SPRING_CONFIG_LOCATION=file:/usr/src/app/config/application.properties
+    volumes:
+      - ./tools/env:/usr/src/app/config
+
   dbpostgres:
     restart: always
     image: postgres

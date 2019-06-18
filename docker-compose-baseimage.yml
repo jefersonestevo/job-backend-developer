@@ -1,0 +1,6 @@
+version: '3.4'
+services:
+  jbd.user.baseimage:
+    image: jbd.user.web/baseimage
+    build:
+      context: .
