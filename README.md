@@ -56,8 +56,6 @@ Na próxima consulta, os dados já estarão cadastrados na base NoSQL e nada imp
 
 ### Tecnologias Utilizadas:
 
-**// TODO**
-
 #### Autenticação/Autorização
 Os dados de login, senha e roles dos usuários serão armazenado no banco de dados relacional (PostgreSQL)
 
@@ -86,6 +84,9 @@ A documentação da API do projeto pode ser obtido através da URI:
 #### Testes unitários com Groovy e Spock:
 
 A opção por utilizar testes unitários em Groovy com o framework Spock se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo
+
+#### OpenTracing:
+Esta aplicação será instrumentada utilizando a api do OpenTracing. A implementação real será o Jaeger. O OpenTracing permite fazer, de um modo não invasivo, a instrumentação de trace em um ambiente distribuído. Assim, ele nos dará maiores insumos para análise futura da utilização da aplicação.
 
 ### Executando o Projeto:
 

@@ -43,7 +43,7 @@ public class UserService {
         Optional<UserData> userData = userDataBaseRepository.findById(id).map(this::convertDataFromUserModel);
 
         if (userData.isPresent()) {
-            userDataMongoRepository.insert(userData.get());
+            userDataMongoRepository.save(userData.get());
 
             try {
                 transactionTemplate.execute((status) -> {

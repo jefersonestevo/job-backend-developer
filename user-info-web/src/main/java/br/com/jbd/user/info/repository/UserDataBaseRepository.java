@@ -4,6 +4,8 @@ import br.com.jbd.user.info.model.User;
 import br.com.jbd.user.info.model.UserAddress;
 import br.com.jbd.user.info.repository.mapper.UserAddressRowMapper;
 import br.com.jbd.user.info.repository.mapper.UserRowMapper;
+import br.com.jbd.user.info.tracer.Traced;
+import br.com.jbd.user.info.tracer.TracedTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -23,6 +25,7 @@ public class UserDataBaseRepository extends NamedParameterJdbcDaoSupport {
         setDataSource(dataSource);
     }
 
+    @Traced(tags = {@TracedTag(name = "db", value = "postgres")})
     public Optional<User> findById(Long id) {
         String sql = " SELECT U.ID, U.LOGIN, I.ID AS USER_INFO_ID, I.NAME, I.LAST_NAME, I.EMAIL, I.PHONE_NUMBER " +
                 " FROM JBD_USER U " +
@@ -50,6 +53,7 @@ public class UserDataBaseRepository extends NamedParameterJdbcDaoSupport {
         return getNamedParameterJdbcTemplate().query(sql, params, new UserAddressRowMapper());
     }
 
+    @Traced(tags = {@TracedTag(name = "db", value = "postgres")})
     public void registerImport(Long id) {
         String sql = " INSERT INTO JBD_USER_IMPORT(ID) VALUES(:ID) ";
 
