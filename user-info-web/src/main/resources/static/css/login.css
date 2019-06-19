@@ -1,0 +1,26 @@
+body {
+    padding-top:4.2rem;
+    padding-bottom:4.2rem;
+    background:rgba(0, 0, 0, 0.76);
+}
+
+.login-form {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 2rem 1rem 4rem 1rem;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 1.1rem;
+    outline: 0;
+    max-width: 500px;
+}
+
+.login-form .col-md-12 {
+    padding-top: 1rem;
+}

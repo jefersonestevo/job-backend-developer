@@ -29,10 +29,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String[] swaggerURIs = {"/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html**", "/webjars/**", "favicon.ico"};
+        String[] allowedURIs = {
+                "/img/**",
+                "/css/**",
+                "/js/**",
+                "/v2/api-docs",
+                "/swagger-resources/**",
+                "/swagger-ui.html**",
+                "/webjars/**",
+                "favicon.ico"
+        };
 
         http
-                .authorizeRequests().antMatchers(HttpMethod.GET, swaggerURIs).permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.GET, allowedURIs).permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
