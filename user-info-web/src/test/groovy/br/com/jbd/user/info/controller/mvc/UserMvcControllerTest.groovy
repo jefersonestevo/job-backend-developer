@@ -1,6 +1,7 @@
 package br.com.jbd.user.info.controller.mvc
 
 import br.com.jbd.user.info.dto.UserData
+import br.com.jbd.user.info.service.UserLoginService
 import br.com.jbd.user.info.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -23,21 +24,25 @@ class UserMvcControllerTest extends Specification {
     UserService userService
 
     @Autowired
+    UserLoginService userLoginService
+
+    @Autowired
     MockMvc mvc
 
     void "user-info with valid user"() {
         given: "Any UserData"
         UserData userData = new UserData()
+        1 * userLoginService.getCurrentUserId() >> 1L
         1 * userService.findUser(1L) >> Optional.of(userData)
 
         when: "We invoke the user info url"
-        def results = mvc.perform(get("/mvc/user/info/1"))
+        def results = mvc.perform(get("/home"))
 
         then: "It must return HTTP Status Ok"
         results.andExpect(status().isOk())
 
         and: "Send the correct view"
-        results.andExpect(view().name("user-info"))
+        results.andExpect(view().name("home"))
 
         and: "Populate the model with the UserData content"
         results.andExpect(model().attribute("user", userData))
@@ -45,10 +50,11 @@ class UserMvcControllerTest extends Specification {
 
     void "user-info with not found user"() {
         given: "No UserData found"
+        1 * userLoginService.getCurrentUserId() >> 1L
         1 * userService.findUser(1L) >> Optional.empty()
 
         when: "We invoke the user info url"
-        def results = mvc.perform(get("/mvc/user/info/1"))
+        def results = mvc.perform(get("/home"))
 
         then: "It must return HTTP Status Not Found"
         results.andExpect(status().isNotFound())
@@ -61,6 +67,11 @@ class UserMvcControllerTest extends Specification {
         @Bean
         UserService userService() {
             return detachedMockFactory.Mock(UserService)
+        }
+
+        @Bean
+        UserLoginService userLoginService() {
+            return detachedMockFactory.Mock(UserLoginService)
         }
     }
 

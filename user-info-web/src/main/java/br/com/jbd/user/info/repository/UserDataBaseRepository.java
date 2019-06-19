@@ -63,4 +63,16 @@ public class UserDataBaseRepository extends NamedParameterJdbcDaoSupport {
         getNamedParameterJdbcTemplate().update(sql, params);
     }
 
+    public Long findIdByLogin(String login) {
+        String sql = " SELECT ID FROM JBD_USER WHERE LOGIN = :LOGIN ";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("LOGIN", login);
+
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(sql, params, Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }

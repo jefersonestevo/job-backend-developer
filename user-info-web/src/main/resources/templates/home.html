@@ -5,5 +5,10 @@
 </head>
 <body>
 <h1>Welcome [[${user.login}]]!</h1>
+
+<form action="#" th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout" />
+</form>
+
 </body>
 </html>
