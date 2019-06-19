@@ -102,7 +102,7 @@ class UserServiceImplTest extends Specification {
         1 * userDataBaseRepository.findById(1L) >> Optional.of(user)
 
         and: "The user is not found on mongoDB"
-        1 * userDataMongoRepository.findById(1L) >> Optional.empty()
+        2 * userDataMongoRepository.findById(1L) >>> [Optional.empty(), Optional.of(new UserData())]
 
         and: "Throws a Duplicate Key Exception while register the import on the database"
         1 * userDataBaseRepository.registerImport(1L) >> {throw new DuplicateKeyException("")}

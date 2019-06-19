@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
                 });
             } catch (DuplicateKeyException e) {
                 LOG.warn(String.format("Error trying to register import for user %d", id), e);
+                return userDataMongoRepository.findById(id);
             }
         }
         return userData;
