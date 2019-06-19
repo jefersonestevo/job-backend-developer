@@ -1,14 +1,118 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>User Example</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Home</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://use.fontawesome.com/be44339bc8.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
 </head>
 <body>
-<h1>Welcome [[${user.login}]]!</h1>
+<nav class="header navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">User Info Web App</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home Page</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="javascript: document.logoutForm.submit()"><span class="fa fa-sign-out"></span>Logout</a>
+                <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                    <input hidden="true" type="submit" value="Sign Out"/>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-<form action="#" th:action="@{/logout}" method="post">
-    <input type="submit" value="Logout" />
-</form>
+<div class="content">
+
+    <div class="user-card">
+        <div class="user-card-info">
+            <div class="user-info-summary">
+                <div class="image">
+
+                </div>
+                <div class="user-name">
+                    [[${user.name}]] [[${user.lastName}]]
+                </div>
+            </div>
+
+            <div class="user-info-detail">
+                <div class="text-field">
+                    <div class="label">Login</div>
+                    <div class="value">[[${user.login}]]</div>
+                </div>
+                <div class="text-field">
+                    <div class="label">Email</div>
+                    <div class="value">[[${user.email}]]</div>
+                </div>
+                <div class="text-field">
+                    <div class="label">Phone Number</div>
+                    <div class="value">[[${user.phoneNumber}]]</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-address-container">
+            <th:block th:each="address, iter : ${user.addresses}">
+                <div class="user-address-spacer"></div>
+                <div class="user-address">
+                    <div class="fieldset-header">Address [[${iter.count}]]</div>
+                    <div class="fieldset-column">
+                        <div class="text-field">
+                            <div class="label">Street</div>
+                            <div class="value">[[${address.street}]]</div>
+                        </div>
+                        <div class="text-field">
+                            <div class="label">Number</div>
+                            <div class="value">[[${address.number}]]</div>
+                        </div>
+                    </div>
+                    <div class="fieldset-column">
+                        <div class="text-field">
+                            <div class="label">City</div>
+                            <div class="value">[[${address.city}]]</div>
+                        </div>
+                        <div class="state-country">
+                            <div class="text-field">
+                                <div class="label">State</div>
+                                <div class="value">[[${address.state}]]</div>
+                            </div>
+                            <div class="text-field">
+                                <div class="label">Country</div>
+                                <div class="value">[[${address.country}]]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-address-spacer"></div>
+            </th:block>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer text-center py-3">© 2019 Copyright: User Info</div>
+</footer>
 
 </body>
 </html>
