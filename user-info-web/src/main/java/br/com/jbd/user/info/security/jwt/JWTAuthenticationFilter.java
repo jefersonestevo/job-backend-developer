@@ -1,5 +1,6 @@
 package br.com.jbd.user.info.security.jwt;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -27,7 +28,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
         String token = httpServletRequest.getHeader(JWTTokenProvider.JWT_TOKEN_HEADER);
         if (token == null || !token.startsWith(JWTTokenProvider.JWT_TOKEN_PREFIX)) {
-            httpServletResponse.setStatus(401);
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         }
 
