@@ -10,9 +10,7 @@ A primeira ação a ser tomada é separar um ambiente com capacidade semelhante 
 
 Neste ambiente, a aplicação deve simular o mais próximo possível as condições de produção para realização de vários testes de performance.
 
-O teste em si pode ser realizado com JMeter, para simular as 5000 requisições simultâneas e deve-se usar um profiler (JProfiler, por exemplo) para análise de quais as possíveis causas para a lentidão no sistema.
-
-Com este profile, será possível pegar algum possível leak de memória/recursos, problemas relacionado ao GC, entre outros.
+O teste em si pode ser realizado com [JMeter](https://jmeter.apache.org/), para simular as 5000 requisições simultâneas e deve-se usar um profiler ([JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), por exemplo) para análise de quais as possíveis causas para a lentidão no sistema.
 
 No geral, este tipo de problema tem algumas causas mais comuns e eu recomendaria analisá-las antes de quaisquer outras:
 
@@ -60,10 +58,10 @@ Na próxima consulta, os dados já estarão cadastrados na base NoSQL e nada imp
 Os dados de login, senha e roles dos usuários serão armazenado no banco de dados relacional (PostgreSQL)
 
 ##### Acesso Web:
-Para acesso Web, será feito um modelo de autentiação via HttpSession do Java. Será utilizado o "Spring Session Redis" para armazenar esta sessão em um redis externo à aplicação permitindo que uma sessão do usuário seja desacoplada da aplicação. Assim, a aplicação poderá ser escalada horizontalmente sem problemas.
+Para acesso Web, será feito um modelo de autentiação via HttpSession do Java. Será utilizado o [Spring Session](https://docs.spring.io/spring-session/docs/current/reference/html5/) com [Redis](https://redis.io/) para armazenar esta sessão em um ambiente externo à aplicação permitindo que uma sessão do usuário seja desacoplada da aplicação. Assim, a aplicação poderá ser escalada horizontalmente sem problemas.
 
 ##### Acesso API:
-Para acesso via API, será utilizado um modelo de autentiação Stateless via JWT. Este modelo de autenticação permite que a aplicação cliente utilize um token JWT válido por um período de tempo grande. Como as aplicações clientes da API serão controladas internamente, fica mais simples para revogar este token.
+Para acesso via API, será utilizado um modelo de autentiação Stateless via [JWT](https://jwt.io/). Este modelo de autenticação permite que a aplicação cliente utilize um token JWT válido por um período de tempo grande. Como as aplicações clientes da API serão controladas internamente, fica mais simples inclusive para revogar este token.
 
 Para obter o token JWT, a aplicação deve fazer uma chamada para:
 ``` 
@@ -79,29 +77,29 @@ Após obter o token, este deve ser informado no Header `Authorization`, no forma
 Authorization: Bearer <token>
 ```
 
-* Somente usuários com role `ADMIN` estão habilitados para chamadas na API
-
 #### Actuator:
-A aplicação irá utilizar o Spring Boot Actuator para fornecer informações operacionais da aplicação através de URL's. As seguintes URl's estarão habilitadas:
+A aplicação irá utilizar o [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready) para fornecer informações operacionais da aplicação através de URL's. 
+
+As seguintes URl's estarão habilitadas:
 
 * /actuator/health - Não é necessário autenticação
 * /actuator/info - Não é necessário autenticação
 * /actuator/threaddump - Autentiação Basic com um usuário que possua role "ACTUATOR"
 * /actuator/metrics - Autentiação Basic com um usuário que possua role "ACTUATOR"
 
-Isto permitirá, por exemplo, que o Kubernetes tenha uma URL (/actuator/health) para utilizar no readinessProbe e livenessProbe.
+Isto permitirá, por exemplo, que o [Kubernetes](https://kubernetes.io/) tenha uma URL (/actuator/health) para utilizar no readinessProbe e livenessProbe.
 
 ##### Autenticação no actuator:
 Os endpoints que necessitarem de autenticação no actuator, irão utilizar um modelo de autenticação `BASIC` e o usuário deverá estar na role `ACTUATOR`
 
 #### Swagger API:
-A documentação da API do projeto pode ser obtido através da URI:
+A documentação [Swagger](https://swagger.io/) da API do projeto pode ser obtido através da URI:
 * /swagger-ui.html - Swagger UI no formato HTML
 * /v2/api-docs - Json com os dados do Swagger
 
 #### Testes unitários com Groovy e Spock:
 
-A opção por utilizar testes unitários em Groovy com o framework Spock se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo
+A opção por utilizar testes unitários em [Groovy](http://groovy-lang.org/) com o framework [Spock](http://spockframework.org/) se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo
 
 Os testes unitários rodam com JUnit. Comando para executá-los:
 ```
@@ -109,38 +107,46 @@ mvn test
 ```
 
 #### Testes de integração com a Base de Dados:
-Os testes de integração com a base de dados não rodam automaticamente com os demais testes, pois eles dependem de uma base de dados postgreSQL rodando.
+Os testes de integração com a base de dados não rodam automaticamente com os demais testes, pois eles dependem de uma base de dados PostgreSQL rodando.
 
-Para sua configuração, crie o arquivo `test.properties` dentro do diretório `./user-info-web/src/test/resources` com base no arquivo `test.properties.template` e ajustar os parâmetros de acordo com o ambiente.
+Para sua configuração, crie o arquivo `test.properties` dentro do diretório `./user-info-web/src/test/resources` com base no arquivo `test.properties.template` e ajuste os parâmetros de acordo com o ambiente de testes.
 
 Após esta configuração, os testes podem ser executados com o profile `integration` do maven:
 ```
 mvn test -Pintegration
 ```
 
-**OBS:** A configuração *default* do `test.properties.template` permite rodar os testes no docker-compose do ambiente local
+**OBS:** A configuração *default* do `test.properties.template` permite rodar os testes no docker-compose do ambiente local numa base de dados específica para tal (*user_info_test*)
 
 #### OpenTracing:
-Esta aplicação será instrumentada utilizando a api do OpenTracing. A implementação real será o Jaeger. O OpenTracing permite fazer, de um modo não invasivo, a instrumentação de trace em um ambiente distribuído. Assim, ele nos dará maiores insumos para análise futura da utilização da aplicação.
+Esta aplicação será instrumentada utilizando a api do [OpenTracing](https://opentracing.io/). A implementação real será o [Jaeger Tracing](https://www.jaegertracing.io/). O OpenTracing permite fazer, de um modo não invasivo, a instrumentação de trace em um ambiente distribuído. Assim, ele nos dará maiores insumos para análises futuras da utilização da aplicação.
 
 ### Executando o Projeto:
 
 Esta aplicação utiliza as seguintes dependências para sua execução:
-* PostgreSQL: Banco de dados relacional onde ficam armazenados os dados de autenticação do usuário (atualmente contem todos os dados do usuário)
-* MongoDB: Bando de dados NoSQL onde serão armazenados os dados do usuário
-* Redis: Banco de dados em memória de alta performance para salvar as sessões HTTP
-* Jaeger: Coletor da instrumentação do OpenTracing da aplicação
+* [PostgreSQL](https://www.postgresql.org/): Banco de dados relacional onde ficam armazenados os dados de autenticação do usuário (atualmente contem todos os dados do usuário)
+* [MongoDB](https://www.mongodb.com/): Bando de dados NoSQL onde serão armazenados os dados do usuário
+* [Redis](https://redis.io/): Banco de dados em memória de alta performance para salvar as sessões HTTP
+* [Jaeger](https://www.jaegertracing.io/): Coletor da instrumentação do OpenTracing da aplicação
 
 Todas estas dependências foram utilizadas através de imagens Docker, tanto para desacoplá-las da aplicação quanto para permitir um ambiente local de testes mais simples.
 
 #### Requisitos de Instalação
 Para rodar este ambiente, é necessário ter instalado o `Docker` e `docker-compose` no computador local
 
-* [Instalar Docker](https://docs.docker.com/install/)
-* [Instaler Docker Compose](https://docs.docker.com/compose/install/)
+* [Instalação do Docker](https://docs.docker.com/install/)
+* [Instalação do Docker Compose](https://docs.docker.com/compose/install/)
 
 #### Executar o ambiente
-1) A primeira etapa necessária é construir a "baseimage" do Docker:
+1) Faça um clone deste repositório:
+    ```
+    mkdir ~/jbd-project
+    cd ~/jbd-project
+    git clone https://github.com/jefersonestevo/job-backend-developer.git
+    cd ./job-backend-developer
+    ```
+
+1) Agora é necessário a construção da "baseimage" do Docker:
     ```
     docker-compose -f docker-compose-baseimage.yml build --force-rm
     ```
@@ -155,6 +161,7 @@ Para rodar este ambiente, é necessário ter instalado o `Docker` e `docker-comp
     ```
     docker-compose up -d
     ```
+    *Aguarde alguns segundos*
 
 1) Quando o ambiente estiver em pé, execute o script para carregar a base de dados do PostgreSQL:
     ```
@@ -168,8 +175,8 @@ Para rodar este ambiente, é necessário ter instalado o `Docker` e `docker-comp
 #### Usuários de acesso:
 A aplicação vem cadastrada com os seguintes usuários:
 * user: Usuário comum, com permissão somente para login
-* admin: Usuário com role de permissão para chamadas na API
-* actuator: Usuário com role de permissão para os endpoints do actuator
+* admin: Usuário com role de permissão para chamadas na API (ADMIN)
+* actuator: Usuário com role de permissão para os endpoints do actuator (ACTUATOR)
 
 A senha de acesso de todos os usuários é `password`
 
@@ -179,7 +186,7 @@ Neste docker-compose, você tem acesso ao Jaeger através da URL:
 http://localhost:16686
 
 #### Documentação API:
-A documentação (*swagger*) da API pode ser consultada através do link:
+A documentação (*Swagger*) da API pode ser consultada através do link:
 
 http://localhost:8180/swagger-ui.html
 
