@@ -178,6 +178,11 @@ Neste docker-compose, você tem acesso ao Jaeger através da URL:
 
 http://localhost:16686
 
+#### Documentação API:
+A documentação (*swagger*) da API pode ser consultada através do link:
+
+http://localhost:8180/swagger-ui.html
+
 ### Configurar o projeto no Kubernetes
 
 Não vou entrar muito em detalhes, mas o projeto foi construído já em uma imagem docker e as suas configurações com possibilidade de serem externalizadas, para permitir a sua configuração num ambiente com Kubernetes.
