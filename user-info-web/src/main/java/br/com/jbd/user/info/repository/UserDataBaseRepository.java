@@ -45,10 +45,10 @@ public class UserDataBaseRepository extends NamedParameterJdbcDaoSupport {
     }
 
     private List<UserAddress> findUserAdresses(Long id) {
-        String sql = " SELECT * FROM JBD_USER_ADDRESS WHERE ID = :ID ";
+        String sql = " SELECT * FROM JBD_USER_ADDRESS WHERE USER_ID = :USER_ID ORDER BY ID ";
 
         Map<String, Object> params = new HashMap<>();
-        params.put("ID", id);
+        params.put("USER_ID", id);
 
         return getNamedParameterJdbcTemplate().query(sql, params, new UserAddressRowMapper());
     }

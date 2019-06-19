@@ -103,6 +103,23 @@ A documentação da API do projeto pode ser obtido através da URI:
 
 A opção por utilizar testes unitários em Groovy com o framework Spock se dá pelo fato do Groovy ser uma linguagem menos verbosa que o Java e o Spock ser um framework que permite a criação de testes mais expressivos. O próprio modelo de testes do Spock já induz o desenvolvedor a criar uma documentação para os testes e torna eles muito mais simples de evoluir com o tempo
 
+Os testes unitários rodam com JUnit. Comando para executá-los:
+```
+mvn test
+```
+
+#### Testes de integração com a Base de Dados:
+Os testes de integração com a base de dados não rodam automaticamente com os demais testes, pois eles dependem de uma base de dados postgreSQL rodando.
+
+Para sua configuração, crie o arquivo `test.properties` dentro do diretório `./user-info-web/src/test/resources` com base no arquivo `test.properties.template` e ajustar os parâmetros de acordo com o ambiente.
+
+Após esta configuração, os testes podem ser executados com o profile `integration` do maven:
+```
+mvn test -Pintegration
+```
+
+**OBS:** A configuração *default* do `test.properties.template` permite rodar os testes no docker-compose do ambiente local
+
 #### OpenTracing:
 Esta aplicação será instrumentada utilizando a api do OpenTracing. A implementação real será o Jaeger. O OpenTracing permite fazer, de um modo não invasivo, a instrumentação de trace em um ambiente distribuído. Assim, ele nos dará maiores insumos para análise futura da utilização da aplicação.
 

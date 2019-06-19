@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <JBD_USER ID="1"
+              LOGIN="user1"
+              PASSWORD="XXXX"
+              ENABLED="true"/>
+
+    <JBD_USER_INFO ID="1"
+                   USER_ID="1"
+                   NAME="User 01"
+                   LAST_NAME="Santos"
+                   EMAIL="user1@gmail.com"
+                   PHONE_NUMBER="123456789" />
+
+    <JBD_USER_ADDRESS ID="1"
+                      USER_ID="1"
+                      STREET="Av. Paulista"
+                      NUMBER="1200"
+                      CITY="Sao Paulo"
+                      STATE="SP"
+                      COUNTRY="Brasil" />
+
+    <JBD_USER_ADDRESS ID="2"
+                      USER_ID="1"
+                      STREET="Rua Augusta"
+                      NUMBER="350"
+                      CITY="Sao Paulo"
+                      STATE="SP"
+                      COUNTRY="Brasil" />
+
+    <JBD_USER ID="10"
+              LOGIN="user2"
+              PASSWORD="YYYY"
+              ENABLED="true"/>
+
+    <JBD_USER_INFO ID="10"
+                   USER_ID="10"
+                   NAME="User 02"
+                   LAST_NAME="da Silva"
+                   EMAIL="user2@gmail.com"
+                   PHONE_NUMBER="987654321" />
+
+    <JBD_USER_ADDRESS ID="10"
+                      USER_ID="10"
+                      STREET="Av. dos Bandeirantes"
+                      NUMBER="3330"
+                      CITY="Sao Paulo"
+                      STATE="SP"
+                      COUNTRY="Brasil" />
+
+
+</dataset>
