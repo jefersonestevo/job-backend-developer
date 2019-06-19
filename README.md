@@ -108,5 +108,67 @@ Esta aplicação será instrumentada utilizando a api do OpenTracing. A implemen
 
 ### Executando o Projeto:
 
-**// TODO**
+Esta aplicação utiliza as seguintes dependências para sua execução:
+* PostgreSQL: Banco de dados relacional onde ficam armazenados os dados de autenticação do usuário (atualmente contem todos os dados do usuário)
+* MongoDB: Bando de dados NoSQL onde serão armazenados os dados do usuário
+* Redis: Banco de dados em memória de alta performance para salvar as sessões HTTP
+* Jaeger: Coletor da instrumentação do OpenTracing da aplicação
 
+Todas estas dependências foram utilizadas através de imagens Docker, tanto para desacoplá-las da aplicação quanto para permitir um ambiente local de testes mais simples.
+
+#### Requisitos de Instalação
+Para rodar este ambiente, é necessário ter instalado o `Docker` e `docker-compose` no computador local
+
+* [Instalar Docker](https://docs.docker.com/install/)
+* [Instaler Docker Compose](https://docs.docker.com/compose/install/)
+
+#### Executar o ambiente
+1) A primeira etapa necessária é construir a "baseimage" do Docker:
+    ```
+    docker-compose -f docker-compose-baseimage.yml build --force-rm
+    ```
+    Esta "baseimage" é utilizada somente para baixar as dependências do maven (.m2) e permitir builds da imagem final de maneira mais rápida (Poderia ser feito na propria imagem da aplicação, usando labels do Docker, mas quando existirem mais aplicações dependentes é mais simples ter uma imagem intermediária já com as dependências do maven baixadas)
+
+1) Após esta etapa, deve ser feito o build da imagem da aplicação
+    ```
+    docker-compose build --force-rm
+    ```
+
+1) Agora podemos subir o ambiente:
+    ```
+    docker-compose up -d
+    ```
+
+1) Quando o ambiente estiver em pé, execute o script para carregar a base de dados do PostgreSQL:
+    ```
+    ./tools/bin/load-db.sh
+    ```
+
+1) Neste ponto, você já consegue acessar a aplicação através da URL:
+    
+    http://localhost:8180
+
+#### Usuários de acesso:
+A aplicação vem cadastrada com os seguintes usuários:
+* user: Usuário comum, com permissão somente para login
+* admin: Usuário com role de permissão para chamadas na API
+* actuator: Usuário com role de permissão para os endpoints do actuator
+
+A senha de acesso de todos os usuários é `password`
+
+#### Jaeger:
+Neste docker-compose, você tem acesso ao Jaeger através da URL:
+
+http://localhost:16686
+
+### Configurar o projeto no Kubernetes
+
+Não vou entrar muito em detalhes, mas o projeto foi construído já em uma imagem docker e as suas configurações com possibilidade de serem externalizadas, para permitir a sua configuração num ambiente com Kubernetes.
+
+Para tanto, basta configurar o Pod do Kubernetes com esta imagem e:
+
+1) Criar uma arquivo `application.properties` com as customizações equivalentes aos do diretório `./tools/env` deste repositório
+
+1) Criar uma variável de ambiente `SPRING_CONFIG_LOCATION` que aponte para este arquivo criado dentro do Pod. Ex:
+
+    ```SPRING_CONFIG_LOCATION=file:/usr/src/app/config/application.properties```
