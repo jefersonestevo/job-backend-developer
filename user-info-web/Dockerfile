@@ -3,6 +3,9 @@ FROM jbd.user.web/baseimage as build
 WORKDIR /usr/src/app
 
 COPY pom.xml .
+COPY ./user-info-web/pom.xml user-info-web/pom.xml
+RUN mvn dependency:go-offline
+
 COPY ./user-info-web user-info-web
 
 RUN mvn clean install -DskipTests
